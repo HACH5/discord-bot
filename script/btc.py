@@ -21,7 +21,6 @@ def get_btc_graph():
     # グラフの設定
     plt.figure(figsize=(12, 6))
     plt.plot(df["timestamp"], df["price"], label="BTC Price (USD)", color="blue")
-    plt.title("BTC Price Over the Last 30 Days")
     plt.xlabel("Date")
     plt.ylabel("Price (USD)")
     plt.grid(True)

@@ -1,6 +1,6 @@
 import discord
 from discord import app_commands
-import os
+import os, datetime
 from dotenv import load_dotenv
 import btc
 
@@ -14,7 +14,7 @@ tree = app_commands.CommandTree(client)
 
 
 def check_is_me(ctx: discord.Interaction):
-    return ctx.user.id == 580716525690945538
+    return ctx.user.id == int(os.getenv("DISCORD_ID"))
 
 
 # 参加しているサーバー表示
@@ -68,7 +68,6 @@ async def graph(interaction: discord.Interaction):
     file = discord.File(f"img/BTC_price.png",f"BTC_price.png")
     embed.set_image(url="attachment://BTC_price.png")
     await interaction.response.send_message(embed=embed, file=file)
-
 
 
 client.run(TOKEN)
