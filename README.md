@@ -8,4 +8,4 @@
 Python 3.10.2
 
 ### 開発者
-* Discord:hadadayo
+* Discord : hadadayo
