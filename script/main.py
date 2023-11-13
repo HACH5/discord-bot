@@ -55,13 +55,15 @@ async def showguild_error(ctx: discord.Interaction, error):
 
 @tree.command(name="graph", description="BTCの直近(1ヵ月)のグラフを表示します。")
 async def graph(interaction: discord.Interaction):
-    btc.get_btc_graph()
-    embed=discord.Embed(title="BTC(直近1ヵ月)")
+    jpy = btc.get_btc_graph()
+    embed=discord.Embed(title="BitCoin")
+    embed.add_field(name=f"現在{int(jpy):,}円", value="多少誤差はあります", inline=False)
+    embed.add_field(name="↓直近1ヵ月のグラフ", value="⚠グラフの値段はUSD表記です", inline=False)
     file = discord.File(f"img/BTC_price.png",f"BTC_price.png")
     embed.set_image(url="attachment://BTC_price.png")
     await interaction.response.send_message(embed=embed, file=file)
 
-@tree.command(name="chat", description="お話をしましょう！textの部分に文章を入力してください。")
+@tree.command(name="chat", description="お話をしましょう！")
 async def chat(interaction: discord.Interaction, text:str):
     try:
         await interaction.response.defer()
@@ -84,7 +86,6 @@ async def chat(interaction: discord.Interaction, text:str):
         import traceback
         traceback.print_exc()
         await interaction.response.send_message("エラーが発生しました")
-
 
 
 client.run(TOKEN)
