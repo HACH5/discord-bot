@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import btc
 import openai
 import time
+import traceback
 
 load_dotenv()
 
@@ -53,17 +54,29 @@ async def showguild_error(ctx: discord.Interaction, error):
 # async def test_command(interaction: discord.Interaction):
 #     await interaction.response.send_message("test!", ephemeral=True)
 
+@tree.command(name="stop", description="Botの停止コマンド")
+@app_commands.default_permissions(administrator=True)
+async def stop_command(interaction: discord.Interaction):
+    await interaction.response.send_message("Botを停止します", ephemeral=True)
+    await client.close()
+
 @tree.command(name="graph", description="BTCの直近(1ヵ月)のグラフを表示します。")
 async def graph(interaction: discord.Interaction):
-    jpy = btc.get_btc_graph()
-    embed=discord.Embed(title="BitCoin")
-    embed.add_field(name=f"現在{int(jpy):,}円", value="多少誤差はあります", inline=False)
-    embed.add_field(name="↓直近1ヵ月のグラフ", value="⚠グラフの値段はUSD表記です", inline=False)
-    file = discord.File(f"img/BTC_price.png",f"BTC_price.png")
-    embed.set_image(url="attachment://BTC_price.png")
-    await interaction.response.send_message(embed=embed, file=file)
+    try:
+        await interaction.response.defer()
+        jpy = btc.get_btc()
+        embed=discord.Embed(title="BitCoin")
+        embed.add_field(name=f"現在{int(jpy):,}円", value="多少誤差はあります", inline=False)
+        embed.add_field(name="↓直近1ヵ月のグラフ", value="⚠グラフの値段はUSD表記です", inline=False)
+        file = discord.File(f"img/BTC_price.png",f"BTC_price.png")
+        embed.set_image(url="attachment://BTC_price.png")
+        await interaction.followup.send(embed=embed, file=file)
+    except:
+        traceback.print_exc()
+        await interaction.response.send_message("エラーが発生しました")
 
 @tree.command(name="chat", description="お話をしましょう！")
+@app_commands.describe(text="お話ししたい内容を入力してください")
 async def chat(interaction: discord.Interaction, text:str):
     try:
         await interaction.response.defer()
@@ -83,7 +96,6 @@ async def chat(interaction: discord.Interaction, text:str):
         res = completion["choices"][0]["message"]["content"]
         await interaction.followup.send(res)
     except:
-        import traceback
         traceback.print_exc()
         await interaction.response.send_message("エラーが発生しました")
 

@@ -19,7 +19,7 @@ def get_usd():
         print(f"エラーが発生しました: {e}")
         return None
 
-def get_btc_graph():
+def get_btc():
     # CoinGecko APIを使用してBTC価格データを取得
     url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
     params = {
