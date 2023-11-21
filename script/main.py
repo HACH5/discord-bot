@@ -1,11 +1,14 @@
 import discord, asyncio
-from discord import app_commands
+from discord import ui, app_commands
+from discord.interactions import Interaction
+from discord.ui import Select, View
 import os, datetime
 from dotenv import load_dotenv
 import btc
 import openai
 import time
 import traceback
+import genshin
 
 load_dotenv()
 
@@ -16,6 +19,21 @@ model_engine = "gpt-3.5-turbo"
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
+
+class search_artifact(ui.Modal, title="聖遺物検索"):
+    result = discord.ui.TextInput(label="検索する文字を入力して下さい")
+    async def on_submit(self, interaction: discord.Interaction):
+        index = 1
+        res = genshin.search_artifact(str(self.result))
+        # print(res)
+        embed = discord.Embed(title="聖遺物検索", description=f"検索結果の結果{len(res)}件見つかりました")
+        for artifact in res:
+            embed.add_field(name=f"聖遺物の詳細  {index}", value=f"名前:{artifact[3]}", inline=False)
+            embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}", inline=False)
+            embed.add_field(name=f"{artifact[3]}の2セット効果", value=f"{artifact[6]}", inline=False)
+            embed.add_field(name=f"{artifact[3]}の4セット効果", value=f"{artifact[7]}", inline=False)
+            index+=1
+        await interaction.response.send_message(embed=embed)
 
 
 def check_is_me(ctx: discord.Interaction):
@@ -100,9 +118,31 @@ async def chat(interaction: discord.Interaction, text:str):
     except:
         traceback.print_exc()
         await interaction.response.send_message("エラーが発生しました")
+    
 
-# @tree.command(name="artifact", description="聖遺物を検索することができます")
-# @app_commands.describe(name="聖遺物の名前")
+@tree.command(name="artifact", description="聖遺物を検索することができます")
+async def artifact(interaction: discord.Interaction):
+    select = Select(options=[
+        discord.SelectOption(label="名前",
+                             value="name",
+                             description="名前で検索"
+                             ),
+
+        discord.SelectOption(label="聖遺物の効果",
+                             value="status",
+                             description="聖遺物の効果で検索")
+    ])
+
+    async def artifact_callback(interaction):
+        if select.values[0] == "name":
+            await interaction.response.send_modal(search_artifact())
+    
+
+    select.callback = artifact_callback
+    view = View()
+    view.add_item(select)
+    await interaction.response.send_message("聖遺物検索", view=view)
+
 
 
 client.run(TOKEN)
