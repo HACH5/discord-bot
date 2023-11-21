@@ -20,16 +20,31 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-class search_artifact(ui.Modal, title="聖遺物検索"):
-    result = discord.ui.TextInput(label="検索する文字を入力して下さい")
+class search_name_artifact(ui.Modal, title="聖遺物検索"):
+    result = discord.ui.TextInput(label="検索する文字を入力して下さい", placeholder="聖遺物の名前のキーワードを打ってね", default="絶縁")
     async def on_submit(self, interaction: discord.Interaction):
         index = 1
-        res = genshin.search_artifact(str(self.result))
+        res = genshin.search_name_artifact(str(self.result))
         # print(res)
         embed = discord.Embed(title="聖遺物検索", description=f"検索結果の結果{len(res)}件見つかりました")
         for artifact in res:
-            embed.add_field(name=f"聖遺物の詳細  {index}", value=f"名前:{artifact[3]}", inline=False)
-            embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}", inline=False)
+            embed.add_field(name=f"聖遺物の詳細  {index}", value=f"名前:{artifact[3]}")
+            embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
+            embed.add_field(name=f"{artifact[3]}の2セット効果", value=f"{artifact[6]}", inline=False)
+            embed.add_field(name=f"{artifact[3]}の4セット効果", value=f"{artifact[7]}", inline=False)
+            index+=1
+        await interaction.response.send_message(embed=embed)
+
+class search_status_artifact(ui.Modal, title="聖遺物検索"):
+    result = discord.ui.TextInput(label="検索する文字を入力して下さい", placeholder="4セットの効果で検索しています", default="元素熟知")
+    async def on_submit(self, interaction: discord.Interaction):
+        index = 1
+        res = genshin.search_status_artifact(str(self.result))
+        # print(res)
+        embed = discord.Embed(title="聖遺物検索", description=f"検索結果の結果{len(res)}件見つかりました")
+        for artifact in res:
+            embed.add_field(name=f"聖遺物の詳細  {index}", value=f"名前:{artifact[3]}")
+            embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
             embed.add_field(name=f"{artifact[3]}の2セット効果", value=f"{artifact[6]}", inline=False)
             embed.add_field(name=f"{artifact[3]}の4セット効果", value=f"{artifact[7]}", inline=False)
             index+=1
@@ -135,7 +150,9 @@ async def artifact(interaction: discord.Interaction):
 
     async def artifact_callback(interaction):
         if select.values[0] == "name":
-            await interaction.response.send_modal(search_artifact())
+            await interaction.response.send_modal(search_name_artifact())
+        if select.values[0] == "status":
+            await interaction.response.send_modal(search_status_artifact())
     
 
     select.callback = artifact_callback
