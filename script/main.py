@@ -59,6 +59,8 @@ async def showguild_error(ctx: discord.Interaction, error):
 async def stop_command(interaction: discord.Interaction):
     await interaction.response.send_message("Botを停止します", ephemeral=True)
     await client.close()
+    print("Botを終了しました")
+    print("---------------------")
 
 @tree.command(name="graph", description="BTCの直近(1ヵ月)のグラフを表示します。")
 async def graph(interaction: discord.Interaction):
@@ -98,6 +100,9 @@ async def chat(interaction: discord.Interaction, text:str):
     except:
         traceback.print_exc()
         await interaction.response.send_message("エラーが発生しました")
+
+# @tree.command(name="artifact", description="聖遺物を検索することができます")
+# @app_commands.describe(name="聖遺物の名前")
 
 
 client.run(TOKEN)

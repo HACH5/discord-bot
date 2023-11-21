@@ -1,5 +1,6 @@
 __pycache__/
 .env
 test/
-img/*.png
+img/
 data/
+database/
