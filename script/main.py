@@ -9,6 +9,7 @@ import openai
 import time
 import traceback
 import genshin
+import logging
 
 load_dotenv()
 
@@ -19,6 +20,8 @@ model_engine = "gpt-3.5-turbo"
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
+
+handler = logging.FileHandler(filename='log/discord.log', encoding='utf-8', mode='w')
 
 class search_name_artifact(ui.Modal, title="聖遺物検索"):
     result = discord.ui.TextInput(label="検索する文字を入力して下さい", placeholder="聖遺物の名前のキーワードを打ってね", default="絶縁")
@@ -239,7 +242,7 @@ async def artifact(interaction: discord.Interaction):
     view.add_item(select)
     await interaction.response.send_message("聖遺物検索", view=view)
 
-@tree.command(name="character", description="現在プレイアブルであるキャラクターを検索することができます")
+@tree.command(name="character", description="現在操作可能であるキャラクターを検索することができます")
 async def character(interaction: discord.Interaction):
     select = Select(options=[
         discord.SelectOption(label="名前",
@@ -265,4 +268,4 @@ async def character(interaction: discord.Interaction):
     await interaction.response.send_message("キャラクター検索", view=view)
 
 
-client.run(TOKEN)
+client.run(TOKEN, log_handler=handler)
