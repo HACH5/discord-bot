@@ -28,6 +28,7 @@ GUILD_ID = discord.Object(1087992275302350860)
 class search_name_artifact(ui.Modal, title="聖遺物検索"):
     result = discord.ui.TextInput(label="検索する文字を入力して下さい", placeholder="聖遺物の名前のキーワードを打ってね", default="絶縁")
     async def on_submit(self, interaction: discord.Interaction):
+        index = 1
         res = genshin.search_name_artifact(str(self.result))
         # print(res)
         if len(res) <= 6:
@@ -37,12 +38,14 @@ class search_name_artifact(ui.Modal, title="聖遺物検索"):
                 embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
                 embed.add_field(name=f"{artifact[3]}の2セット効果", value=f"{artifact[6]}", inline=False)
                 embed.add_field(name=f"{artifact[3]}の4セット効果", value=f"{artifact[7]}", inline=False)
+                index += 1
             await interaction.response.send_message(embed=embed)
         else:
             embed = discord.Embed(title="聖遺物検索", description=f"{self.result}の検索結果{len(res)}件見つかりましたが、内容を省略して表示します")
             for artifact in res:
                 embed.add_field(name=f"{index}件目:聖遺物の詳細", value=f"名前:{artifact[3]}")
                 embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
+                index += 1
             await interaction.response.send_message(embed=embed)
 
 class search_status_artifact(ui.Modal, title="聖遺物検索"):
