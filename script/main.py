@@ -32,41 +32,38 @@ class search_name_artifact(ui.Modal, title="聖遺物検索"):
         res = genshin.search_name_artifact(str(self.result))
         # print(res)
         if len(res) <= 6:
-            embed = discord.Embed(title="聖遺物検索", description=f"{self.result}の検索結果{len(res)}件見つかりました")
+            embed = discord.Embed(title="聖遺物検索", description=f"**{self.result}** の検索結果{len(res)}件見つかりました")
             for artifact in res:
-                embed.add_field(name=f"{index}件目:聖遺物の詳細", value=f"名前:{artifact[3]}")
-                embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
+                embed.add_field(name=f"{index}件目:{artifact[3]}", value=f"レアリティ:☆{artifact[1]}")
                 embed.add_field(name=f"{artifact[3]}の2セット効果", value=f"{artifact[6]}", inline=False)
                 embed.add_field(name=f"{artifact[3]}の4セット効果", value=f"{artifact[7]}", inline=False)
                 index += 1
             await interaction.response.send_message(embed=embed)
         else:
-            embed = discord.Embed(title="聖遺物検索", description=f"{self.result}の検索結果{len(res)}件見つかりましたが、内容を省略して表示します")
+            embed = discord.Embed(title="聖遺物検索", description=f"**{self.result}** の検索結果{len(res)}件見つかりましたが、内容を省略して表示します")
             for artifact in res:
-                embed.add_field(name=f"{index}件目:聖遺物の詳細", value=f"名前:{artifact[3]}")
-                embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
+                embed.add_field(name=f"{index}件目:{artifact[3]}", value=f"レアリティ:☆{artifact[1]}")
                 index += 1
             await interaction.response.send_message(embed=embed)
 
 class search_status_artifact(ui.Modal, title="聖遺物検索"):
-    result = discord.ui.TextInput(label="検索する文字を入力して下さい", placeholder="4セットの効果で検索しています", default="元素熟知")
+    result = discord.ui.TextInput(label="検索する文字を入力して下さい", placeholder="**4セットの効果**で検索しています", default="元素熟知")
     async def on_submit(self, interaction: discord.Interaction):
         res = genshin.search_status_artifact(str(self.result))
         # print(res)
         if len(res) <= 6:
-            embed = discord.Embed(title="聖遺物検索", description=f"{self.result}の検索結果{len(res)}件見つかりました")
+            embed = discord.Embed(title="聖遺物検索", description=f"**{self.result}** の検索結果{len(res)}件見つかりました")
             for artifact in res:
-                embed.add_field(name=f"{index}件目:聖遺物の詳細", value=f"名前:{artifact[3]}")
-                embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
+                embed.add_field(name=f"{index}件目:{artifact[3]}", value=f"レアリティ:☆{artifact[1]}")
                 embed.add_field(name=f"{artifact[3]}の2セット効果", value=f"{artifact[6]}", inline=False)
                 embed.add_field(name=f"{artifact[3]}の4セット効果", value=f"{artifact[7]}", inline=False)
                 index+=1
             await interaction.response.send_message(embed=embed)
         else:
-            embed = discord.Embed(title="聖遺物検索", description=f"{self.result}の検索結果{len(res)}件見つかりましたが、内容を省略して表示します")
+            embed = discord.Embed(title="聖遺物検索", description=f"**{self.result}** の検索結果{len(res)}件見つかりましたが、内容を省略して表示します")
             for artifact in res:
-                embed.add_field(name=f"{index}件目:聖遺物の詳細", value=f"名前:{artifact[3]}")
-                embed.add_field(name=f"{artifact[3]}のレアリティ", value=f"☆{artifact[1]}")
+                embed.add_field(name=f"{index}件目:{artifact[3]}", value=f"レアリティ:☆{artifact[1]}")
+                index += 1
             await interaction.response.send_message(embed=embed)
 
 
